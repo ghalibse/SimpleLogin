@@ -2,11 +2,19 @@ package com.example.simplelogin;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -16,10 +24,13 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivityTAG_";
     private TextView user;
     private TextView pass;
     private Button mbutton;
-    String url = "http://www.mocky.io/v2/57a01bec0f0000c10d0f650f";
+    String url = "http://www.mocky.io/v2/57a4dfb40f0000821dc9a3b8";
+
+    ArrayList<Student> students;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+                String json = response.body().string();
+
+                Type listType = new TypeToken<List<Student>>() {
+                }.getType();
+
+                Gson gson = new GsonBuilder().create();
+                students = gson.fromJson(json, listType);
+
+                for (Student  i : students){
+                    Log.d(TAG, "onResponse: " + i.toString());
+                }
 
             }
         });
